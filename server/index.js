@@ -1,25 +1,26 @@
-require('dotenv').config({ path: require('path').resolve(__dirname, '..', '.env') });
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
-const { getDb, seedDb } = require('./db');
+require('dotenv').config();
+
+const incidentRoutes = require('./routes/incidents');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/api/incidents', incidentRoutes);
+app.use('/api/auth', authRoutes);
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/campus-incidents';
 
-async function start() {
-  await getDb();
-  await seedDb();
+mongoose.connect(MONGO_URI)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
-  const incidentRoutes = require('./routes/incidents');
-  const adminRoutes = require('./routes/admin');
+app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
-  app.use('/api/incidents', incidentRoutes);
-  app.use('/api/admin', adminRoutes);
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-}
-
-start();
+module.exports = app;

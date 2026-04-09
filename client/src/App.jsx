@@ -1,18 +1,18 @@
-import { Routes, Route } from 'react-router-dom'
-import Navbar from './components/Navbar'
-import IncidentForm from './components/IncidentForm'
-import AdminPage from './components/AdminPage'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import IncidentForm from './pages/IncidentForm';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
   return (
-    <>
-      <Navbar />
+    <Router>
       <Routes>
         <Route path="/" element={<IncidentForm />} />
-        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
-    </>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
